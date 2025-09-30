@@ -13,7 +13,7 @@ import {
 } from "./banner";
 import { CONSENT_CATEGORIES, consentManagerConfig, consentStoreConfig } from "./config";
 import { getTranslationFromLanguage } from "./helper";
-import { blockConsentingScripts } from "./gate";
+import { allowConsentedScripts } from "./gate";
 
 const handlers: Array<(p: any) => void> = [];
 
@@ -45,25 +45,24 @@ store.getState().setConsent('measurement', true);
 store.getState().locationInfo?.jurisdiction;
 */
 
-blockConsentingScripts({ debug: false, observe: true });
+let uglyhas;
 
 export async function init() {
-	injectStyles();
-	// quarantineKnownTrackers();
-
 	const consentManager = configureConsentManager(consentManagerConfig);
 	const consentStore = createConsentManagerStore(consentManager, consentStoreConfig);
-	consentStore.setState({
-		locationInfo: {
-			countryCode: "sv",
-			jurisdiction: "gdpr",
-			regionCode: null,
-			jurisdictionMessage: "eu",
-		},
-	});
+	// consentStore.setState({
+	// 	locationInfo: {
+	// 		countryCode: "sv",
+	// 		jurisdiction: "gdpr",
+	// 		regionCode: null,
+	// 		jurisdictionMessage: "eu",
+	// 	},
+	// });
 
 	const langState = consentStore.getState().translationConfig.translations;
 	const lang = getTranslationFromLanguage(langState, navigator.languages);
+
+	uglyhas = consentStore.getState().has;
 
 	const banner = createBanner(lang as any);
 	const modal = createModal(CONSENT_CATEGORIES, lang as any);
@@ -72,7 +71,9 @@ export async function init() {
 	console.log("Get state to debug its contents", consentStore.getState());
 
 	const shouldShowBanner = consentStore.getState().showPopup;
-	if (shouldShowBanner) {
+	console.log("should show banner", shouldShowBanner)
+	if (!shouldShowBanner) {
+		injectStyles();
 		wireModal(modal);
 		document.body.append(modal, banner);
 
@@ -119,16 +120,21 @@ export async function init() {
 		},
 	};
 	window.consentContext = context;
+	allowConsentedScripts(consentStore.getState().has);
+
 	return context;
 }
 
 (async () => {
 	await init();
+	console.log("inited");
 })();
 
 export default {
 	consents: {
 		allowAnalytics: () => window.consentContext?.consents.allowAnalytics() || false,
 		allowsFunctional: () => window.consentContext?.has('functionality') || false,
-	}
+		has: (consentOption: string) => window.consentContext?.has(consentOption) || false,
+	},
+	pleaseDoNotUseThisHasFunction: uglyhas
 };

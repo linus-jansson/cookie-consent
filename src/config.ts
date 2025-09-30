@@ -4,6 +4,11 @@ import type {
 	StoreOptions,
 } from "c15t";
 import { translationConfig } from "./i18n";
+import { allowConsentedScripts } from "./gate";
+import consentContext from './index';
+
+
+export type ConsentCategory = AllConsentNames[];
 
 export const CONSENT_CATEGORIES: AllConsentNames[] = [
 	"necessary",
@@ -13,22 +18,22 @@ export const CONSENT_CATEGORIES: AllConsentNames[] = [
 
 export const consentManagerConfig: ConsentManagerOptions = {
 	mode: "offline",
-	store: {
-		initialGdprTypes: CONSENT_CATEGORIES,
-		callbacks: {
-			onBannerFetched(response) {
-				console.log("Consent banner fetched", response);
-			},
-			onConsentSet(response) {
-				console.log("Consent has been saved", response);
-			},
-			onError(error) {
-				console.log("Error", error);
-			},
-		},
-	},
 };
 
 export const consentStoreConfig: StoreOptions = {
+	initialGdprTypes: CONSENT_CATEGORIES,
 	initialTranslationConfig: translationConfig,
+	callbacks: {
+		onBannerFetched(response) {
+			console.log("Consent banner fetched", response);
+		},
+		onConsentSet(response) {
+			console.log("Consent has been saved", response);
+			console.log("call allow consented scripts");
+			allowConsentedScripts(consentContext.pleaseDoNotUseThisHasFunction);
+		},
+		onError(error) {
+			console.log("Error", error);
+		},
+	},
 };

@@ -2,7 +2,7 @@ import { defineConfig } from "tsup";
 
 export default defineConfig({
 	entry: ["src/index.ts"],
-	format: ["esm", "iife", "cjs"],
+	format: ["esm"],
 	globalName: "C15TConsent", // window.C15TConsent for IIFE/UMD
 	dts: true,
 	sourcemap: true,
