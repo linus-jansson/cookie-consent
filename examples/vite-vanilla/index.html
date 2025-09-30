@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+		<meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vite-vanilla</title>
+		<!-- Cookie consent script -->
+		<script type="module" src="./dist/index.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+		<script 
+			data-src="tests/needsConsent.js"
+			data-consent="measurement"
+		></script>
+		<script
+			type="module"
+			data-src="tests/needsConsentModule.js"
+			data-consent="measurement"
+		></script>
+		<script type="asdasdjalskjdlskjd" data-consent="measurement">
+			alert("This script needs consent to run. We run this inline");
+		</script>
+  </body>
+</html>

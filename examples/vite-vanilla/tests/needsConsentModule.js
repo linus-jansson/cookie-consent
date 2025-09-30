@@ -1,0 +1,1 @@
+alert("This script is a module and needs consent to run.");

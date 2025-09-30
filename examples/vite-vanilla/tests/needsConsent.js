@@ -1,0 +1,1 @@
+alert("This script requires consent to run.");
