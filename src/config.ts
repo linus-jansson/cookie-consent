@@ -18,10 +18,12 @@ export const CONSENT_CATEGORIES: AllConsentNames[] = [
 
 export const consentManagerConfig: ConsentManagerOptions = {
 	mode: "offline",
+	store: {
+		initialGdprTypes: CONSENT_CATEGORIES,
+	}
 };
 
 export const consentStoreConfig: StoreOptions = {
-	initialGdprTypes: CONSENT_CATEGORIES,
 	initialTranslationConfig: translationConfig,
 	callbacks: {
 		onBannerFetched(response) {

@@ -49,6 +49,8 @@ let uglyhas;
 
 export async function init() {
 	const consentManager = configureConsentManager(consentManagerConfig);
+	const consentBanner = await consentManager.showConsentBanner();
+	console.log("consent banner should be shown?", consentBanner);
 	const consentStore = createConsentManagerStore(consentManager, consentStoreConfig);
 	// consentStore.setState({
 	// 	locationInfo: {
@@ -72,7 +74,7 @@ export async function init() {
 
 	const shouldShowBanner = consentStore.getState().showPopup;
 	console.log("should show banner", shouldShowBanner)
-	if (!shouldShowBanner) {
+	if (shouldShowBanner) {
 		injectStyles();
 		wireModal(modal);
 		document.body.append(modal, banner);
