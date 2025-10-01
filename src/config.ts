@@ -3,10 +3,9 @@ import type {
 	ConsentManagerOptions,
 	StoreOptions,
 } from "c15t";
-import { translationConfig } from "./i18n";
 import { allowConsentedScripts } from "./gate";
-import consentContext from './index';
-
+import { translationConfig } from "./i18n";
+import consentContext from "./index";
 
 export type ConsentCategory = AllConsentNames[];
 
@@ -20,7 +19,7 @@ export const consentManagerConfig: ConsentManagerOptions = {
 	mode: "offline",
 	store: {
 		initialGdprTypes: CONSENT_CATEGORIES,
-	}
+	},
 };
 
 export const consentStoreConfig: StoreOptions = {

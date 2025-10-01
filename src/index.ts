@@ -11,9 +11,13 @@ import {
 	readToggles,
 	wireModal,
 } from "./banner";
-import { CONSENT_CATEGORIES, consentManagerConfig, consentStoreConfig } from "./config";
-import { getTranslationFromLanguage } from "./helper";
+import {
+	CONSENT_CATEGORIES,
+	consentManagerConfig,
+	consentStoreConfig,
+} from "./config";
 import { allowConsentedScripts } from "./gate";
+import { getTranslationFromLanguage } from "./helper";
 
 const handlers: Array<(p: any) => void> = [];
 
@@ -51,7 +55,10 @@ export async function init() {
 	const consentManager = configureConsentManager(consentManagerConfig);
 	const consentBanner = await consentManager.showConsentBanner();
 	console.log("consent banner should be shown?", consentBanner);
-	const consentStore = createConsentManagerStore(consentManager, consentStoreConfig);
+	const consentStore = createConsentManagerStore(
+		consentManager,
+		consentStoreConfig,
+	);
 	// consentStore.setState({
 	// 	locationInfo: {
 	// 		countryCode: "sv",
@@ -68,12 +75,12 @@ export async function init() {
 
 	const banner = createBanner(lang as any);
 	const modal = createModal(CONSENT_CATEGORIES, lang as any);
-	
+
 	console.log("Translations from state:", lang);
 	console.log("Get state to debug its contents", consentStore.getState());
 
 	const shouldShowBanner = consentStore.getState().showPopup;
-	console.log("should show banner", shouldShowBanner)
+	console.log("should show banner", shouldShowBanner);
 	if (shouldShowBanner) {
 		injectStyles();
 		wireModal(modal);
@@ -134,9 +141,12 @@ export async function init() {
 
 export default {
 	consents: {
-		allowAnalytics: () => window.consentContext?.consents.allowAnalytics() || false,
-		allowsFunctional: () => window.consentContext?.has('functionality') || false,
-		has: (consentOption: string) => window.consentContext?.has(consentOption) || false,
+		allowAnalytics: () =>
+			window.consentContext?.consents.allowAnalytics() || false,
+		allowsFunctional: () =>
+			window.consentContext?.has("functionality") || false,
+		has: (consentOption: string) =>
+			window.consentContext?.has(consentOption) || false,
 	},
-	pleaseDoNotUseThisHasFunction: uglyhas
+	pleaseDoNotUseThisHasFunction: uglyhas,
 };
