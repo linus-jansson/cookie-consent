@@ -33,21 +33,6 @@ declare global {
 	}
 }
 
-/*
-export const cm = configureConsentManager({
-		mode: 'offline',
-		store: {
-				initialGdprTypes: ['necessary', 'marketing'],
-		},
-});
-
-const store = createConsentManagerStore(cm);
-
-store.getState().has('measurement');
-store.getState().setConsent('measurement', true);
-store.getState().locationInfo?.jurisdiction;
-*/
-
 export async function init() {
 	const consentManager = configureConsentManager(consentManagerConfig);
 	const consentStore = createConsentManagerStore(
@@ -61,28 +46,17 @@ export async function init() {
 	// Set callbacks
 	consentStore.setState({
 		callbacks: {
+			onConsentSet() {
+				allowConsentedScripts(consentStore.getState().has);
+			},
 			onBannerFetched(response) {
 				console.error("Consent banner fetched", response);
-			},
-			onConsentSet(response) {
-				console.log("Consent has been saved", response);
-				console.log("call allow consented scripts");
-				allowConsentedScripts(consentStore.getState().has);
 			},
 			onError(error) {
 				console.error("Error with cookie consenting", error);
 			},
 		},
 	})
-
-	// consentStore.setState({
-	// 	locationInfo: {
-	// 		countryCode: "sv",
-	// 		jurisdiction: "gdpr",
-	// 		regionCode: null,
-	// 		jurisdictionMessage: "eu",
-	// 	},
-	// });
 
 	const langState = consentStore.getState().translationConfig.translations;
 	console.log("Available languages", Object.keys(langState));
@@ -93,41 +67,33 @@ export async function init() {
 	const banner = createBanner(lang as any);
 	const modal = createModal(CONSENT_CATEGORIES, lang as any);
 
-	console.log("Translations from state:", lang);
-	console.log("Get state to debug its contents", consentStore.getState());
 	const shouldShowBanner = consentStore.getState().showPopup;
-	console.log("should show banner", shouldShowBanner);
 	if (shouldShowBanner) {
 		injectStyles();
 		document.body.append(modal, banner);
 
 		banner.addEventListener("click", (e) => {
-			const t = (e.target as HTMLElement).dataset.action;
-			if (t === "accept" || t === "reject") {
+			const action = (e.target as HTMLElement).dataset.action;
+			if (action === "accept" || action === "reject") {
 				for (const c of CONSENT_CATEGORIES) {
-					const acceptedCategory = t === "accept";
+					const acceptedCategory = action === "accept";
 					consentStore.getState().setConsent(c, acceptedCategory);
 				}
-				console.log(
-					"on click, current consents",
-					consentStore.getState().consents,
-				);
 				banner.remove();
 			}
-			if (t === "customize") {
+			if (action === "customize") {
 				modal.setAttribute("open", "")
 				banner.remove();
 			};
 		});
 
 		modal.addEventListener("click", (e) => {
-			const t = (e.target as HTMLElement).dataset.action;
-			if (t === "save") {
+			const action = (e.target as HTMLElement).dataset.action;
+			if (action === "save") {
 				const prefs = readToggles(modal, CONSENT_CATEGORIES);
-				console.log("read toggles", prefs);
-				consentStore.setState({
-					consents: prefs,
-				})
+				for (const pref in prefs) {
+					consentStore.getState().setConsent(pref as AllConsentNames, prefs[pref as AllConsentNames]);
+				}
 				modal.removeAttribute("open");
 				banner.remove();
 			}
@@ -153,7 +119,6 @@ export async function init() {
 
 (async () => {
 	await init();
-	console.log("inited");
 })();
 
 export default {
@@ -162,7 +127,5 @@ export default {
 			window.consentContext?.consents.allowAnalytics() || false,
 		allowsFunctional: () =>
 			window.consentContext?.has("functionality") || false,
-		// has: (consentOption: string) =>
-		// 	window.consentContext?.has(consentOption) || false,
 	},
 };

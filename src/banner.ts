@@ -173,10 +173,11 @@ export function createModal(categories: AllConsentNames[], strings: Translations
 		</div>
   `;
 
+	// biome-ignore lint/style/noNonNullAssertion: It will be there
 	const rows = modal.querySelector(".dsc-rows")!;
 	for (const cat of categories) {
-		// if (cat === "necessary") continue; // always on
-		const t = strings.consentTypes?.[cat];
+		// Translation of category
+		const t = strings.consentTypes?.[cat]; 
 		const title = t?.title;
 		const desc = t?.description ?? "";
 		const row = document.createElement("div");
@@ -218,6 +219,7 @@ export function readToggles(modal: HTMLElement, categories: AllConsentNames[]) {
 
 	for (const cat of categories) {
 		const el = modal.querySelector<HTMLInputElement>(`#switch-${cat}`);
+		// we force necessary to true to prevent client side manipulation of it
 		prefs[cat] = cat === "necessary" ? true : !!el?.checked;
 	}
 	return prefs;
