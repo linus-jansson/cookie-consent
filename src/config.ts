@@ -3,9 +3,7 @@ import type {
 	ConsentManagerOptions,
 	StoreOptions,
 } from "c15t";
-import { allowConsentedScripts } from "./gate";
 import { translationConfig } from "./i18n";
-import consentContext from "./index";
 
 export type ConsentCategory = AllConsentNames[];
 
@@ -24,4 +22,5 @@ export const consentManagerConfig: ConsentManagerOptions = {
 
 export const consentStoreConfig: StoreOptions = {
 	initialTranslationConfig: translationConfig,
+	translationConfig: translationConfig,
 };

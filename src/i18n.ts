@@ -50,14 +50,14 @@ export const translationConfig: TranslationConfig = {
 		sv: {
 			common: {
 				acceptAll: "Acceptera alla",
-				rejectAll: "Avvisa alla",
+				rejectAll: "Endast nödvändiga",
 				customize: "Anpassa",
 				save: "Spara",
 			},
 			cookieBanner: {
 				title: "Kakor på denna webbplats",
 				description:
-					"Vi använder kakor för att förbättra din upplevelse, analysera trafik och anpassa innehåll. Du kan välja vilka kategorier som ska tillåtas.",
+					"Vi använder nödvändiga kakor (cookies) för att webbplatsen ska fungera. Vi skulle vilja sätta lite fler kakor för olika funktioner som hjälper dig som användare. Vi vill också sätta kakor för statistik så vi kan analysera och förbättra webbplatsen. Du kan när du vill ändra dina inställningar.",
 			},
 			consentManagerDialog: {
 				title: "Hantera dina kakpreferenser",
@@ -83,7 +83,7 @@ export const translationConfig: TranslationConfig = {
 				measurement: {
 					title: "Statistiska",
 					description:
-						"Hjälper oss att förstå hur vår webbplats används genom analys och prestandamätning.",
+						"Dessa kakor används för webbanalys så vi kan utvärdera och förbättra webbplatsens innehåll, upplevelse och struktur.",
 				},
 				marketing: {
 					title: "Marknadsföring",

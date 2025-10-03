@@ -13,7 +13,7 @@ export function allowConsentedScripts(has: (a: any) => boolean) {
 		const newScript = document.createElement("script");
 
 		// Copy all attributes except `type`
-		[...script.attributes].forEach((attr) => {
+		Array.from(script.attributes).forEach((attr) => {
 			if (attr.name === "type") return;
 
 			// Restore original script type if specified

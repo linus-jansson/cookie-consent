@@ -85,6 +85,7 @@ export async function init() {
 	// });
 
 	const langState = consentStore.getState().translationConfig.translations;
+	console.log("Available languages", Object.keys(langState));
 	const lang = getTranslationFromLanguage(langState, navigator.languages);
 
 	// uglyhas = consentStore.getState().has;
@@ -113,7 +114,10 @@ export async function init() {
 				);
 				banner.remove();
 			}
-			if (t === "customize") modal.setAttribute("open", "");
+			if (t === "customize") {
+				modal.setAttribute("open", "")
+				banner.remove();
+			};
 		});
 
 		modal.addEventListener("click", (e) => {
@@ -158,7 +162,7 @@ export default {
 			window.consentContext?.consents.allowAnalytics() || false,
 		allowsFunctional: () =>
 			window.consentContext?.has("functionality") || false,
-		has: (consentOption: string) =>
-			window.consentContext?.has(consentOption) || false,
+		// has: (consentOption: string) =>
+		// 	window.consentContext?.has(consentOption) || false,
 	},
 };
