@@ -9,7 +9,6 @@ import {
 	createModal,
 	injectStyles,
 	readToggles,
-	wireModal,
 } from "./banner";
 import {
 	CONSENT_CATEGORIES,
@@ -49,16 +48,33 @@ store.getState().setConsent('measurement', true);
 store.getState().locationInfo?.jurisdiction;
 */
 
-let uglyhas;
-
 export async function init() {
 	const consentManager = configureConsentManager(consentManagerConfig);
-	const consentBanner = await consentManager.showConsentBanner();
-	console.log("consent banner should be shown?", consentBanner);
 	const consentStore = createConsentManagerStore(
 		consentManager,
 		consentStoreConfig,
 	);
+	if (!localStorage.getItem("privacy-consent-storage")) {
+		consentStore.setState({ showPopup: true });
+	}
+
+	// Set callbacks
+	consentStore.setState({
+		callbacks: {
+			onBannerFetched(response) {
+				console.error("Consent banner fetched", response);
+			},
+			onConsentSet(response) {
+				console.log("Consent has been saved", response);
+				console.log("call allow consented scripts");
+				allowConsentedScripts(consentStore.getState().has);
+			},
+			onError(error) {
+				console.error("Error with cookie consenting", error);
+			},
+		},
+	})
+
 	// consentStore.setState({
 	// 	locationInfo: {
 	// 		countryCode: "sv",
@@ -71,19 +87,17 @@ export async function init() {
 	const langState = consentStore.getState().translationConfig.translations;
 	const lang = getTranslationFromLanguage(langState, navigator.languages);
 
-	uglyhas = consentStore.getState().has;
+	// uglyhas = consentStore.getState().has;
 
 	const banner = createBanner(lang as any);
 	const modal = createModal(CONSENT_CATEGORIES, lang as any);
 
 	console.log("Translations from state:", lang);
 	console.log("Get state to debug its contents", consentStore.getState());
-
 	const shouldShowBanner = consentStore.getState().showPopup;
 	console.log("should show banner", shouldShowBanner);
 	if (shouldShowBanner) {
 		injectStyles();
-		wireModal(modal);
 		document.body.append(modal, banner);
 
 		banner.addEventListener("click", (e) => {
@@ -107,10 +121,9 @@ export async function init() {
 			if (t === "save") {
 				const prefs = readToggles(modal, CONSENT_CATEGORIES);
 				console.log("read toggles", prefs);
-				for (const pref of prefs) {
-					console.log("set consent", pref, prefs[pref]);
-					consentStore.getState().setConsent(pref, prefs[pref]);
-				}
+				consentStore.setState({
+					consents: prefs,
+				})
 				modal.removeAttribute("open");
 				banner.remove();
 			}
@@ -148,5 +161,4 @@ export default {
 		has: (consentOption: string) =>
 			window.consentContext?.has(consentOption) || false,
 	},
-	pleaseDoNotUseThisHasFunction: uglyhas,
 };

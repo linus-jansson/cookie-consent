@@ -24,17 +24,4 @@ export const consentManagerConfig: ConsentManagerOptions = {
 
 export const consentStoreConfig: StoreOptions = {
 	initialTranslationConfig: translationConfig,
-	callbacks: {
-		onBannerFetched(response) {
-			console.log("Consent banner fetched", response);
-		},
-		onConsentSet(response) {
-			console.log("Consent has been saved", response);
-			console.log("call allow consented scripts");
-			allowConsentedScripts(consentContext.pleaseDoNotUseThisHasFunction);
-		},
-		onError(error) {
-			console.log("Error", error);
-		},
-	},
 };

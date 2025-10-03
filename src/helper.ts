@@ -9,6 +9,7 @@ export const getTranslationFromLanguage = (
 	// We try to find the best match in the translations object
 	// Fallback to 'en' if no match is found
 	for (const lang of languages) {
+		console.log("Checking for language", lang);
 		if (translations[lang]) return translations[lang];
 	}
 	return translations.en!;
