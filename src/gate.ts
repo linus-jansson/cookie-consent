@@ -2,7 +2,6 @@ export function allowConsentedScripts(has: (a: any) => boolean) {
 	const blockedScripts = document.querySelectorAll<HTMLScriptElement>(
 		"script[data-consent]",
 	);
-	console.log("Consentable scripts");
 	blockedScripts.forEach((script) => {
 		const consentCategory = script.dataset.consent;
 

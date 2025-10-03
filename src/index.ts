@@ -59,10 +59,7 @@ export async function init() {
 	})
 
 	const langState = consentStore.getState().translationConfig.translations;
-	console.log("Available languages", Object.keys(langState));
 	const lang = getTranslationFromLanguage(langState, navigator.languages);
-
-	// uglyhas = consentStore.getState().has;
 
 	const banner = createBanner(lang as any);
 	const modal = createModal(CONSENT_CATEGORIES, lang as any);
@@ -74,17 +71,24 @@ export async function init() {
 
 		banner.addEventListener("click", (e) => {
 			const action = (e.target as HTMLElement).dataset.action;
-			if (action === "accept" || action === "reject") {
-				for (const c of CONSENT_CATEGORIES) {
-					const acceptedCategory = action === "accept";
-					consentStore.getState().setConsent(c, acceptedCategory);
+			switch (action) {
+				case "accept":
+				case "reject": {
+					for (const c of CONSENT_CATEGORIES) {
+						const acceptedCategory = action === "accept";
+						consentStore.getState().setConsent(c, acceptedCategory);
+					}
+					banner.remove();
+					break;
 				}
-				banner.remove();
+				case "customize": {
+					modal.setAttribute("open", "")
+					banner.remove();
+					break;
+				}
+				default:
+					break;
 			}
-			if (action === "customize") {
-				modal.setAttribute("open", "")
-				banner.remove();
-			};
 		});
 
 		modal.addEventListener("click", (e) => {
